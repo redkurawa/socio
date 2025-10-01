@@ -2,8 +2,10 @@ import { z } from 'zod';
 
 export const RegisSchema = z
   .object({
-    name: z.string(),
+    name: z.string('tidak boleh kosong'),
+    username: z.string(),
     email: z.string().email('Format email tidak valid'),
+    phone: z.string().min(11, 'nomer telp tidak valid'),
     password: z
       .string()
       .min(6, { message: 'Kata sandi harus minimal 6 karakter.' }),

@@ -1,7 +1,32 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
+
+/* @import 'tailwindcss/preflight'; */
+@tailwind utilities;
 
 @custom-variant dark (&:is(.dark *));
+
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('../src/assets/SFPRODISPLAYREGULAR.OTF') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@theme {
+  --text-display-md: 2rem;
+  --text-display-md--line-height: 2.5rem;
+
+  --text-md: 1rem;
+  /* --text-md--line-height: 1.875rem; */
+
+  --color-primary-100: #f6f9fe;
+  --color-primary-200: #7f51f9;
+  --color-primary-300: #6936f2;
+  --color-accent-red: #d9206e;
+  --color-accent-green: #079455;
+  --color-accent-yellow: #fdb022;
+}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -111,10 +136,47 @@
 }
 
 @layer base {
-  * {
+  /* * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+  } */
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'SF Pro Display', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+  }
+}
+
+@layer components {
+  .sm-container {
+    margin: 0 auto;
+    @apply max-w-300;
+  }
+}
+
+@layer utilities {
+  /* flex utilities */
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
+
+  .flex-between {
+    @apply flex items-center justify-between;
+  }
+
+  .flex-start {
+    @apply flex items-center justify-start;
+  }
+
+  .ball {
+    @apply flex items-center justify-center rounded-full;
+  }
+
+  .custom-input {
+    @apply my-1 h-12 border-neutral-800 text-neutral-400;
   }
 }
