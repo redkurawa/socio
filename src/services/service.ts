@@ -2,10 +2,11 @@ import { api } from './api';
 
 const GetService = async (queryPath: string = '', token?: string) => {
   try {
+    // console.log('queryPath :', queryPath);
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
     const r = await api.get(queryPath, { headers });
     return r.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to fetch GetService:', error);
     throw error;
   }
@@ -17,8 +18,11 @@ const PostService = async (
   token?: string
 ) => {
   try {
+    // console.log('queryPath :', queryPath);
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
     const r = await api.post(queryPath, payload, { headers });
+    console.log('Payload:', payload);
+    console.log('Headers:', headers);
     return r;
   } catch (error: any) {
     if (error.response) {

@@ -29,11 +29,11 @@ export const Login = () => {
       console.log('token :', r.data);
       addAuthData(r.data.data);
       toast.success('Login success');
-      navigate('/');
+      navigate('/timeline');
     } catch (e: any) {}
 
     const r = await PostService('auth/login', data);
-    console.log('token :', r.data);
+    // console.log('token :', r.data);
     addAuthData(r.data.data);
   };
 

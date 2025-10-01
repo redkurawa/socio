@@ -1,34 +1,36 @@
+import { GetService } from '@/services/service';
 import { socioStore } from '@/store/user';
+import type { FeedItem } from '@/types/feed';
 import type { AuthUser } from '@/types/user-auth';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { Button } from '../ui/button';
+import { Heart, MessageSquareText } from 'lucide-react';
 
-export const Homepage = () => {
+export const Timeline = () => {
   const [user, setUser] = useState<AuthUser>();
-  // const [feeds, setFeeds] = useState<FeedItem[]>([]);
-
+  const [feeds, setFeeds] = useState<FeedItem[]>([]);
   const userlogin = socioStore((s) => s.authData);
 
   useEffect(() => {
     setUser(userlogin?.user);
   }, [userlogin]);
 
-  // useEffect(() => {
-  //   const token = userlogin?.token;
-  //   setUser(userlogin?.user);
-  //   console.log(token);
-  //   const getFeed = async () => {
-  //     try {
-  //       const r = await GetService('feed', token);
-  //       console.log(r.data.items);
-  //       setFeeds(r.data.items);
-  //     } catch (e) {
-  //       console.error(e);
-  //     }
-  //   };
-  //   getFeed();
-  // }, []);
+  useEffect(() => {
+    const token = userlogin?.token;
+    setUser(userlogin?.user);
+    console.log(token);
+    const getFeed = async () => {
+      try {
+        const r = await GetService('feed', token);
+        console.log(r.data.items);
+        setFeeds(r.data.items);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    getFeed();
+  }, []);
 
   const navigate = useNavigate();
 
@@ -58,7 +60,7 @@ export const Homepage = () => {
         </Link>
       </div>
       <div>
-        {/* {feeds.map((feed) => (
+        {feeds.map((feed) => (
           <div key={feed.id}>
             <img
               src={feed.imageUrl}
@@ -75,7 +77,7 @@ export const Homepage = () => {
             {feed.author.name}
             <div>{feed.caption}</div>
           </div>
-        ))} */}
+        ))}
       </div>
     </div>
   );
