@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { api } from './api';
 
 const GetService = async (queryPath: string = '', token?: string) => {
@@ -21,8 +22,8 @@ const PostService = async (
     // console.log('queryPath :', queryPath);
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
     const r = await api.post(queryPath, payload, { headers });
-    console.log('Payload:', payload);
-    console.log('Headers:', headers);
+    // console.log('Payload:', payload);
+    // console.log('Headers:', headers);
     return r;
   } catch (error: any) {
     if (error.response) {
@@ -36,4 +37,24 @@ const PostService = async (
   }
 };
 
+const API_URL =
+  'https://socialmediaapi-production-fc0e.up.railway.app/api/posts';
+const TOKEN =
+  'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoic2lydXAgYWJjIiwiaWF0IjoxNzU5MjA2ODc3LCJleHAiOjE3NTk4MTE2Nzd9.qX3aKvv5Yn_UfsTitfXdDYnSc6QXqdR6yMuCfIK5Y50';
+
+export const postImage = async (data: { image: File; caption: string }) => {
+  const formData = new FormData();
+  formData.append('image', data.image);
+  formData.append('caption', data.caption);
+
+  const response = await axios.post(API_URL, formData, {
+    headers: {
+      Authorization: TOKEN,
+      'Content-Type': 'multipart/form-data',
+      Accept: '*/*',
+    },
+  });
+
+  return response.data;
+};
 export { GetService, PostService };

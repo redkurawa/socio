@@ -1,0 +1,29 @@
+import type { Author } from '@/types/feed';
+import { Capitalize } from '@/utils/capitalize';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+interface UserAvatarProps {
+  a: Author;
+  c: string;
+}
+
+export const UserAvatar = ({ a, c }: UserAvatarProps) => {
+  dayjs.extend(relativeTime);
+  return (
+    <div className='mb-3 flex items-center gap-3'>
+      {a.avatarUrl ? (
+        <img src={a.avatarUrl} alt='' className='size-16 rounded-full' />
+      ) : (
+        <div className='size-16 rounded-full bg-neutral-800'></div>
+      )}
+      <div>
+        <div className='text-md font-bold text-[#FDFDFD]'>
+          {Capitalize(a.name)}
+        </div>
+        <div className='tex-sm text-neutral-400'>{dayjs(c).fromNow()}</div>
+        {/* <div>{a.id}</div> */}
+      </div>
+    </div>
+  );
+};

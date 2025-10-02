@@ -82,7 +82,7 @@ export default function AddPost() {
             variant={'secondary'}
             // size={'md'}
           >
-            Add Book
+            Add post
           </Button>
         </form>
       </div>

@@ -1,15 +1,14 @@
 import { LoginSchema } from '@/schema/login-schema';
 import { PostService } from '@/services/service';
+import { socioStore } from '@/store/user';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router';
+import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Logo } from '../ui/logo';
-import { Link, useNavigate } from 'react-router';
-import { socioStore } from '@/store/user';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -26,7 +25,7 @@ export const Login = () => {
   const onSubmit = async (data: LoginSchema) => {
     try {
       const r = await PostService('auth/login', data);
-      console.log('token :', r.data);
+      // console.log('token :', r.data);
       addAuthData(r.data.data);
       toast.success('Login success');
       navigate('/timeline');
@@ -37,12 +36,12 @@ export const Login = () => {
     addAuthData(r.data.data);
   };
 
-  const authData = socioStore((s) => s.authData);
-  useEffect(() => {
-    if (authData) {
-      console.log(authData);
-    }
-  }, [authData]);
+  // const authData = socioStore((s) => s.authData);
+  // // useEffect(() => {
+  // //   if (authData) {
+  // //     console.log(authData);
+  // //   }
+  // // }, [authData]);
 
   return (
     <>
