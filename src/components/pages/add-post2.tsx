@@ -2,10 +2,16 @@ import { postSchema } from '@/schema/post-schema';
 import { PostService } from '@/services/service';
 import { socioStore } from '@/store/user';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Label } from '@radix-ui/react-label';
+import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm, type FieldError } from 'react-hook-form';
+import { Link } from 'react-router';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { Header } from '../layouts/header';
+import { Button } from '../ui/button';
+import { Textarea } from '../ui/textarea';
 
 type PostFormData = z.infer<typeof postSchema>;
 
@@ -16,6 +22,7 @@ export default function PostForm() {
     handleSubmit,
     watch,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<PostFormData>({
     resolver: zodResolver(postSchema),
@@ -36,6 +43,7 @@ export default function PostForm() {
   }, [watchedImage]);
 
   const onSubmit = async (data: PostFormData) => {
+    console.log('🧪 Form submitted with data:', data);
     const file = data.image[0];
     const formData = new FormData();
     formData.append('image', file);
@@ -67,50 +75,161 @@ export default function PostForm() {
     }
   }, [watchedImage]);
 
+  // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    // if (file) {
+    //   const url = URL.createObjectURL(file);
+    //   setPreviewUrl(url);
+    // }
+    if (file) {
+      const url = URL.createObjectURL(file);
+      console.log('🖼️ Preview URL set:', url);
+      setPreviewUrl(url);
+    } else {
+      console.warn('⚠️ No file selected');
+    }
+  };
+
+  const handleRemoveImage = () => {
+    console.log('❌ Removing image');
+    setPreviewUrl(null);
+    // Optional: reset field di react-hook-form
+    setValue('image', null);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='mx-auto w-1/2 space-y-4'>
-      <div>
-        <label>Caption</label>
-        <input
-          type='text'
-          {...register('caption')}
-          className='w-full border p-2'
-        />
-        {errors.caption && (
-          <p className='text-red-500'>{errors.caption.message}</p>
-        )}
-        {watchedCaption && (
-          <p className='text-sm text-gray-500'>Preview: {watchedCaption}</p>
-        )}
-      </div>
+    <>
+      <Header />
+      <div className='mx-auto mt-10 w-full max-w-113'>
+        <Link to='/timeline'>
+          <h1 className='flex items-center gap-3'>
+            <ArrowLeft className='size-8 text-white' />
+            <span className='text-2xl font-bold'>Add Post</span>
+          </h1>
+        </Link>
+        <form onSubmit={handleSubmit(onSubmit)} className='mt-6 space-y-4'>
+          {/* <div>
+            <Label className='text-sm'>Photo</Label>
+            <div className='relative'>
+              <input
+                type='file'
+                accept='image/*'
+                {...register('image')}
+                id='image-upload'
+                className='hidden' // sembunyikan input asli
+              />
+              <label
+                htmlFor='image-upload'
+                className='flex w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-neutral-800 bg-neutral-900/80 py-6 text-center transition hover:bg-neutral-800'
+              >
+                <span className='font-semibold text-purple-400'>
+                  Click to upload
+                </span>
+                <span className='text-sm text-neutral-400'>
+                  or drag and drop
+                </span>
+              </label>
+            </div>
 
-      <div>
-        <label>Gambar</label>
-        <input
-          type='file'
-          accept='image/*'
-          {...register('image')}
-          className='w-full border p-2'
-        />
-        {/* {errors.image && <p className='text-red-500'>{errors.image.message}</p>} */}
-        {(errors.image as FieldError | undefined)?.message && (
-          <p className='text-red-500'>{(errors.image as FieldError).message}</p>
-        )}
-        {previewUrl && (
-          <img
-            src={previewUrl}
-            alt='Preview'
-            className='mt-2 max-w-xs rounded'
-          />
-        )}
-      </div>
+            {(errors.image as FieldError | undefined)?.message && (
+              <p className='text-red-500'>
+                {(errors.image as FieldError).message}
+              </p>
+            )}
 
-      <button
-        type='submit'
-        className='rounded bg-blue-500 px-4 py-2 text-white'
-      >
-        Upload
-      </button>
-    </form>
+            {previewUrl && (
+              <img
+                src={previewUrl}
+                alt='Preview'
+                className='mt-2 max-w-xs rounded'
+              />
+            )}
+          </div> */}
+
+          <div
+            className='relative w-full overflow-hidden rounded-xl border border-dashed border-neutral-800 bg-neutral-900/80 text-center'
+            style={{
+              aspectRatio: '3 / 2', // opsional, bisa diganti sesuai rasio ideal
+              maxHeight: '50vh',
+              maxWidth: '50vw',
+              backgroundImage: previewUrl ? `url(${previewUrl})` : undefined,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+            }}
+          >
+            <input
+              type='file'
+              accept='image/*'
+              // {...register('image')}
+              {...register('image', {
+                onChange: (e) => {
+                  console.log('📦 File selected:', e.target.files?.[0]);
+                  handleImageChange(e);
+                },
+              })}
+              id='image-upload'
+              className='hidden'
+              // onChange={handleImageChange}
+            />
+
+            <label
+              htmlFor='image-upload'
+              className={`flex h-full w-full cursor-pointer flex-col items-center justify-center py-6 transition ${
+                previewUrl ? 'bg-cover bg-center bg-no-repeat' : ''
+              }`}
+              style={
+                previewUrl ? { backgroundImage: `url(${previewUrl})` } : {}
+              }
+            >
+              {!previewUrl && (
+                <>
+                  <span className='font-semibold text-purple-400'>
+                    Click to upload
+                  </span>
+                  <span className='text-sm text-neutral-400'>
+                    or drag and drop
+                  </span>
+                </>
+              )}
+            </label>
+
+            {previewUrl && (
+              <button
+                type='button'
+                onClick={handleRemoveImage}
+                className='absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white transition hover:bg-black/80'
+                aria-label='Remove image'
+              >
+                &times;
+              </button>
+            )}
+          </div>
+
+          <div>
+            <Label className='text-sm'>Caption</Label>
+            <Textarea
+              // type='text'
+              {...register('caption')}
+              className='min-h-[5rem] w-full resize-none rounded-xl border border-neutral-800 bg-neutral-900/80 p-2'
+              placeholder='Create your caption'
+              rows={5}
+            />
+            {errors.caption && (
+              <p className='text-red-500'>{errors.caption.message}</p>
+            )}
+            {watchedCaption && (
+              <p className='text-sm text-gray-500'>Preview: {watchedCaption}</p>
+            )}
+          </div>
+
+          <Button type='submit' variant={'secondary'}>
+            Upload
+          </Button>
+        </form>
+      </div>
+    </>
   );
 }

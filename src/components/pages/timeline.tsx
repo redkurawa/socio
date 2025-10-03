@@ -12,6 +12,8 @@ import { Footer } from '../layouts/footer';
 import { Header } from '../layouts/header';
 import { UserAvatar } from '../layouts/user-avatar';
 import type { Pagination } from '@/types/pagination';
+import { Page } from '../layouts/pagination';
+import { Button } from '../ui/button';
 
 export const Timeline = () => {
   const [feeds, setFeeds] = useState<FeedItem[]>([]);
@@ -19,25 +21,6 @@ export const Timeline = () => {
   const userlogin = socioStore((s) => s.authData);
   const navigate = useNavigate();
   dayjs.extend(relativeTime);
-
-  useEffect(() => {
-    const token = userlogin?.token;
-    if (!token) {
-      navigate('/');
-      return;
-    }
-    const getFeed = async () => {
-      try {
-        const r = await GetService('feed', token);
-        console.log(r);
-        setFeeds(r.data.items);
-        setPage(r.data.pagination);
-      } catch (e) {
-        console.error(e);
-      }
-    };
-    getFeed();
-  }, []);
 
   const handleLike = async (feedId: number) => {
     try {
@@ -62,15 +45,30 @@ export const Timeline = () => {
     }
   };
 
+  useEffect(() => {
+    const token = userlogin?.token;
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    const getFeed = async () => {
+      try {
+        const r = await GetService('feed', token);
+        console.log(r);
+        setFeeds(r.data.items);
+        setPage(r.data.pagination);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    getFeed();
+  }, []);
+
   return (
     <>
+      {!userlogin ? navigate('/login') : <div></div>}
       <Header />
-      <div className='flex w-full justify-center gap-5'>
-        <div>limit : {page?.limit}</div>
-        <div>page : {page?.page}</div>
-        <div>total : {page?.total}</div>
-        <div>totalPages : {page?.totalPages}</div>
-      </div>
+      {page && <Page {...page} />}
       <div className='mx-auto mt-10 w-full max-w-150'>
         {/* selamat datang {user?.name} */}
         {/* <div className='flex gap-3'>
@@ -91,10 +89,8 @@ export const Timeline = () => {
           <Link to='/addpost'>
             <Button>Add Post</Button>
           </Link>
-          <Link to='/user-search'>
-            <Button>Search</Button>
-          </Link>
         </div> */}
+
         <div className='p-2 sm:p-0'>
           {feeds.map((feed) => (
             <div key={feed.id} className='mb-12'>

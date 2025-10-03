@@ -18,7 +18,7 @@ function App() {
     <>
       <div className={`mx-auto ${isNoMaxWidth ? '' : 'max-w-360'}`}>
         <Routes>
-          <Route path='/' element={<Homepage />} />
+          <Route path='/' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
           <Route path='/addpost' element={<PostForm />} />
