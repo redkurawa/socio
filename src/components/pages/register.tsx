@@ -28,7 +28,7 @@ export const Register = () => {
       return r;
     } catch (e: any) {
       console.error({ e });
-      const msg = e?.response?.data?.message || 'post review failed';
+      const msg = e?.response?.data?.message || 'Register failed';
       toast.error(msg);
     }
   };

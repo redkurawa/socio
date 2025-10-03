@@ -1,3 +1,5 @@
+import { Link } from 'react-router';
+
 export const Footer = () => {
   return (
     <>
@@ -10,8 +12,10 @@ export const Footer = () => {
           <img src='/icons/add.svg' alt='' />
         </div>
         <div className='flex flex-col items-center'>
-          <img src='/icons/profile.svg' alt='' />
-          Profile
+          <Link to='/profile'>
+            <img src='/icons/profile.svg' alt='' />
+            Profile
+          </Link>
         </div>
       </div>
     </>

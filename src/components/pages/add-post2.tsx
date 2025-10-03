@@ -1,16 +1,16 @@
-import { useForm, type FieldError } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-// import { postSchema } from './validationSchema';
-// import { postImageWithCaption } from './postService';
-import { z } from 'zod';
-import { useEffect, useState } from 'react';
+import { useForm, type FieldError } from 'react-hook-form';
 import { postSchema } from '@/schema/post-schema';
-import { postImage } from '@/services/service';
+import { PostMulti } from '@/services/service';
+import { socioStore } from '@/store/user';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { z } from 'zod';
 
 type PostFormData = z.infer<typeof postSchema>;
 
 export default function PostForm() {
+  const user = socioStore((s) => s.authData);
   const {
     register,
     handleSubmit,
@@ -35,31 +35,23 @@ export default function PostForm() {
     }
   }, [watchedImage]);
 
-  // const onSubmit = async (data: PostFormData) => {
-
-  //   try {
-  //     await postImage(data);
-  //     alert('Berhasil posting!');
-  //     reset();
-  //     setPreviewUrl(null);
-  //   } catch (error) {
-  //     console.error('Gagal posting:', error);
-  //     alert('Terjadi kesalahan saat posting.');
-  //   }
-  // };
-
   const onSubmit = async (data: PostFormData) => {
-    const file = data.image[0]; // Ambil file pertama dari FileList
+    const file = data.image[0];
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('caption', data.caption);
 
     try {
-      await postImage({ image: file, caption: data.caption });
+      await PostMulti('posts', formData, user?.token);
       // alert('Berhasil posting!');
       toast.success('Post added successfully!');
       reset();
       setPreviewUrl(null);
-    } catch (error) {
-      console.error('Gagal posting:', error);
+    } catch (e: any) {
+      console.error('Gagal posting:', e);
       alert('Terjadi kesalahan saat posting.');
+      const msg = e?.response?.data?.message || 'Register failed';
+      toast.error(msg);
     }
   };
 

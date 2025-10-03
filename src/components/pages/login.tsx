@@ -29,11 +29,15 @@ export const Login = () => {
       addAuthData(r.data.data);
       toast.success('Login success');
       navigate('/timeline');
-    } catch (e: any) {}
+    } catch (e: any) {
+      console.error({ e });
+      // const msg = e?.response?.data?.message || 'Register failed';
+      toast.error('Email not found or Password not match');
+    }
 
-    const r = await PostService('auth/login', data);
+    // const r = await PostService('auth/login', data);
     // console.log('token :', r.data);
-    addAuthData(r.data.data);
+    // addAuthData(r.data.data);
   };
 
   // const authData = socioStore((s) => s.authData);

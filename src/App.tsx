@@ -7,6 +7,8 @@ import { Timeline } from './components/pages/timeline';
 import { UserSearch } from './components/pages/user-search';
 import { Toaster } from './components/ui/sonner';
 import { PostDetail } from './components/pages/post-detail';
+import EditProfile from './components/pages/edit-profile';
+// import { EditProfile } from './components/pages/edit-profile';
 
 function App() {
   const location = useLocation();
@@ -25,6 +27,7 @@ function App() {
           <Route path='/user-search' element={<UserSearch />} />
           <Route path='/timeline' element={<Timeline />} />
           <Route path='/posts/:id' element={<PostDetail />} />
+          <Route path='/profile' element={<EditProfile />} />
         </Routes>
       </div>
       <Toaster position='top-center' richColors />

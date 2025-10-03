@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { api } from './api';
 
 const GetService = async (queryPath: string = '', token?: string) => {
@@ -37,24 +36,41 @@ const PostService = async (
   }
 };
 
-const API_URL =
-  'https://socialmediaapi-production-fc0e.up.railway.app/api/posts';
-const TOKEN =
-  'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoic2lydXAgYWJjIiwiaWF0IjoxNzU5MjA2ODc3LCJleHAiOjE3NTk4MTE2Nzd9.qX3aKvv5Yn_UfsTitfXdDYnSc6QXqdR6yMuCfIK5Y50';
+// const API_URL =
+//   'https://socialmediaapi-production-fc0e.up.railway.app/api/posts';
+// const TOKEN =
+//   'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoic2lydXAgYWJjIiwiaWF0IjoxNzU5MjA2ODc3LCJleHAiOjE3NTk4MTE2Nzd9.qX3aKvv5Yn_UfsTitfXdDYnSc6QXqdR6yMuCfIK5Y50';
 
-export const postImage = async (data: { image: File; caption: string }) => {
-  const formData = new FormData();
-  formData.append('image', data.image);
-  formData.append('caption', data.caption);
+// export const postImage = async (data: { image: File; caption: string }) => {
+//   const formData = new FormData();
+//   formData.append('image', data.image);
+//   formData.append('caption', data.caption);
 
-  const response = await axios.post(API_URL, formData, {
-    headers: {
-      Authorization: TOKEN,
-      'Content-Type': 'multipart/form-data',
-      Accept: '*/*',
-    },
-  });
+//   const response = await axios.post(API_URL, formData, {
+//     headers: {
+//       Authorization: TOKEN,
+//       'Content-Type': 'multipart/form-data',
+//       Accept: '*/*',
+//     },
+//   });
 
-  return response.data;
+//   return response.data;
+// };
+
+const PostMulti = async (url: string = '', formData?: any, token?: string) => {
+  const headers = token
+    ? {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+        Accept: '*/*',
+      }
+    : {};
+  try {
+    const r = await api.post(url, formData, { headers });
+    return r;
+  } catch (e: any) {
+    console.log(e);
+  }
 };
-export { GetService, PostService };
+
+export { GetService, PostMulti, PostService };
