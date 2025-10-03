@@ -1,6 +1,7 @@
 import { GetService, PostService } from '@/services/service';
 import { socioStore } from '@/store/user';
 import type { FeedItem } from '@/types/feed';
+import type { Pagination } from '@/types/pagination';
 import { Capitalize } from '@/utils/capitalize';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -10,10 +11,8 @@ import { Link, useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import { Footer } from '../layouts/footer';
 import { Header } from '../layouts/header';
-import { UserAvatar } from '../layouts/user-avatar';
-import type { Pagination } from '@/types/pagination';
 import { Page } from '../layouts/pagination';
-import { Button } from '../ui/button';
+import { UserAvatar } from '../layouts/user-avatar';
 
 export const Timeline = () => {
   const [feeds, setFeeds] = useState<FeedItem[]>([]);

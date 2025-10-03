@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '@radix-ui/react-label';
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { useForm, type FieldError } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router';
 import { toast } from 'sonner';
 import { z } from 'zod';

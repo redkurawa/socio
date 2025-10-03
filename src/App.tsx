@@ -1,13 +1,12 @@
 import { Route, Routes, useLocation } from 'react-router';
 import PostForm from './components/pages/add-post2';
-import { Homepage } from './components/pages/homepage';
+import EditProfile from './components/pages/edit-profile';
 import Login from './components/pages/login';
+import { PostDetail } from './components/pages/post-detail';
 import Register from './components/pages/register';
 import { Timeline } from './components/pages/timeline';
 import { UserSearch } from './components/pages/user-search';
 import { Toaster } from './components/ui/sonner';
-import { PostDetail } from './components/pages/post-detail';
-import EditProfile from './components/pages/edit-profile';
 
 function App() {
   const location = useLocation();
