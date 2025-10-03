@@ -22,7 +22,6 @@ export const UserAvatar = ({ a, c }: UserAvatarProps) => {
           {Capitalize(a.name)}
         </div>
         <div className='tex-sm text-neutral-400'>{dayjs(c).fromNow()}</div>
-        {/* <div>{a.id}</div> */}
       </div>
     </div>
   );

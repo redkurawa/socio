@@ -40,38 +40,40 @@ export const PostDetail = () => {
     console.log(comments);
   }, [comments]);
   return (
-    <div>
+    <>
       <Header />
-      {details ? (
-        <div className='mx-auto w-full max-w-300 p-3 md:p-0 lg:flex'>
-          <img
-            src={details.imageUrl}
-            alt={details.id.toString()}
-            className='w-full max-w-180 object-cover'
-          />
-          <div className='flex-1 p-5'>
-            <div>
-              <UserAvatar a={details.author} c={details.createdAt} />
-              <div className='border-b border-neutral-800 pb-4'>
-                {details.caption}
-              </div>
-              <h1 className='text-md mt-4 font-bold text-[#FDFDFD]'>
-                Comments
-              </h1>
+      <div className='mt-10'>
+        {details ? (
+          <div className='mx-auto w-full max-w-300 p-3 md:p-0 lg:flex'>
+            <img
+              src={details.imageUrl}
+              alt={details.id.toString()}
+              className='w-full max-w-180 object-cover'
+            />
+            <div className='flex-1 p-5'>
               <div>
-                {comments.map((c) => (
-                  <div>
-                    <UserAvatar a={c.author} c={c.createdAt} />
-                    <div>{c.text}</div>
-                  </div>
-                ))}
+                <UserAvatar a={details.author} c={details.createdAt} />
+                <div className='border-b border-neutral-800 pb-4'>
+                  {details.caption}
+                </div>
+                <h1 className='text-md mt-4 font-bold text-[#FDFDFD]'>
+                  Comments
+                </h1>
+                <div>
+                  {comments.map((c) => (
+                    <div>
+                      <UserAvatar a={c.author} c={c.createdAt} />
+                      <div>{c.text}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ) : (
-        <></>
-      )}
-    </div>
+        ) : (
+          <></>
+        )}
+      </div>
+    </>
   );
 };

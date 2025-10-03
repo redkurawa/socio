@@ -1,7 +1,6 @@
 import { GetService, PostService } from '@/services/service';
 import { socioStore } from '@/store/user';
 import type { FeedItem } from '@/types/feed';
-// import type { AuthUser } from '@/types/user-auth';
 import { Capitalize } from '@/utils/capitalize';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -12,10 +11,11 @@ import { toast } from 'sonner';
 import { Footer } from '../layouts/footer';
 import { Header } from '../layouts/header';
 import { UserAvatar } from '../layouts/user-avatar';
+import type { Pagination } from '@/types/pagination';
 
 export const Timeline = () => {
-  // const [user, setUser] = useState<AuthUser>();
   const [feeds, setFeeds] = useState<FeedItem[]>([]);
+  const [page, setPage] = useState<Pagination>();
   const userlogin = socioStore((s) => s.authData);
   const navigate = useNavigate();
   dayjs.extend(relativeTime);
@@ -26,13 +26,12 @@ export const Timeline = () => {
       navigate('/');
       return;
     }
-    // setUser(userlogin?.user);
-    // console.log(token);
     const getFeed = async () => {
       try {
         const r = await GetService('feed', token);
-        // console.log(r.data.items);
+        console.log(r);
         setFeeds(r.data.items);
+        setPage(r.data.pagination);
       } catch (e) {
         console.error(e);
       }
@@ -66,6 +65,12 @@ export const Timeline = () => {
   return (
     <>
       <Header />
+      <div className='flex w-full justify-center gap-5'>
+        <div>limit : {page?.limit}</div>
+        <div>page : {page?.page}</div>
+        <div>total : {page?.total}</div>
+        <div>totalPages : {page?.totalPages}</div>
+      </div>
       <div className='mx-auto mt-10 w-full max-w-150'>
         {/* selamat datang {user?.name} */}
         {/* <div className='flex gap-3'>

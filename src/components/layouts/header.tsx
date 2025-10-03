@@ -1,4 +1,3 @@
-// import { useAppSelector } from '@/redux/hooks';
 import { socioStore } from '@/store/user';
 import { Menu } from 'lucide-react';
 import { Link } from 'react-router';
@@ -36,7 +35,15 @@ export const Header = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild className='cursor-pointer'>
               <div className='flex items-center gap-3'>
-                <img src='/icons/face.png' alt='' />
+                {user.user.avatarUrl ? (
+                  <img
+                    src={user.user.avatarUrl}
+                    alt=''
+                    className='size-12 rounded-full'
+                  />
+                ) : (
+                  <div className='size-16 rounded-full bg-neutral-800'></div>
+                )}
                 {user.user.name}
               </div>
             </DropdownMenuTrigger>
@@ -45,17 +52,12 @@ export const Header = () => {
         ) : (
           <>
             <div className='text-md hidden items-center gap-4 md:flex'>
-              <Button
-                className='cursor-pointer'
-                variant={'outline'}
-                // size={'md'}
-              >
+              <Button className='cursor-pointer' variant={'outline'}>
                 <Link to='/login'>Login</Link>
               </Button>
               <Button
                 className='cursor-pointer hover:bg-neutral-200/30'
                 variant={'secondary'}
-                // size={'md'}
               >
                 <Link to='/register'>Register</Link>
               </Button>
@@ -71,17 +73,12 @@ export const Header = () => {
                     <SheetDescription></SheetDescription>
                   </SheetHeader>
                   <div className='text-md flex justify-around gap-4 p-5'>
-                    <Button
-                      className='cursor-pointer'
-                      variant={'outline'}
-                      // size={'md'}
-                    >
+                    <Button className='cursor-pointer' variant={'outline'}>
                       <Link to='/login'>Login</Link>
                     </Button>
                     <Button
                       className='cursor-pointer hover:bg-neutral-200/30'
                       variant={'secondary'}
-                      // size={'md'}
                     >
                       <Link to='/register'>Register</Link>
                     </Button>

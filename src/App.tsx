@@ -8,12 +8,10 @@ import { UserSearch } from './components/pages/user-search';
 import { Toaster } from './components/ui/sonner';
 import { PostDetail } from './components/pages/post-detail';
 import EditProfile from './components/pages/edit-profile';
-// import { EditProfile } from './components/pages/edit-profile';
 
 function App() {
   const location = useLocation();
 
-  // Daftar route yang tidak memakai max-w-360
   const noMaxWidthRoutes = ['/register', '/login'];
   const isNoMaxWidth = noMaxWidthRoutes.includes(location.pathname);
   return (
