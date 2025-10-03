@@ -36,27 +36,6 @@ const PostService = async (
   }
 };
 
-// const API_URL =
-//   'https://socialmediaapi-production-fc0e.up.railway.app/api/posts';
-// const TOKEN =
-//   'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoic2lydXAgYWJjIiwiaWF0IjoxNzU5MjA2ODc3LCJleHAiOjE3NTk4MTE2Nzd9.qX3aKvv5Yn_UfsTitfXdDYnSc6QXqdR6yMuCfIK5Y50';
-
-// export const postImage = async (data: { image: File; caption: string }) => {
-//   const formData = new FormData();
-//   formData.append('image', data.image);
-//   formData.append('caption', data.caption);
-
-//   const response = await axios.post(API_URL, formData, {
-//     headers: {
-//       Authorization: TOKEN,
-//       'Content-Type': 'multipart/form-data',
-//       Accept: '*/*',
-//     },
-//   });
-
-//   return response.data;
-// };
-
 const PostMulti = async (url: string = '', formData?: any, token?: string) => {
   const headers = token
     ? {
@@ -73,4 +52,19 @@ const PostMulti = async (url: string = '', formData?: any, token?: string) => {
   }
 };
 
-export { GetService, PostMulti, PostService };
+const PatchMulti = async (url: string = '', formData?: any, token?: string) => {
+  const headers = token
+    ? {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      }
+    : {};
+  try {
+    const r = api.patch(url, formData, { headers });
+    return r;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export { GetService, PostMulti, PostService, PatchMulti };

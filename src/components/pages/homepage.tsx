@@ -1,8 +1,6 @@
 import { socioStore } from '@/store/user';
 import type { AuthUser } from '@/types/user-auth';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
-import { Button } from '../ui/button';
 
 export const Homepage = () => {
   const [user, setUser] = useState<AuthUser>();
@@ -14,12 +12,12 @@ export const Homepage = () => {
     setUser(userlogin?.user);
   }, [userlogin]);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <div>
       selamat datang {user?.name}
-      <div className='flex gap-3'>
+      {/* <div className='flex gap-3'>
         <Button
           onClick={() => {
             navigate('/register');
@@ -40,8 +38,7 @@ export const Homepage = () => {
         <Link to='/user-search'>
           <Button>Search</Button>
         </Link>
-      </div>
-      <div></div>
+      </div> */}
     </div>
   );
 };

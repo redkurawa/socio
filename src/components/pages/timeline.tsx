@@ -1,21 +1,20 @@
 import { GetService, PostService } from '@/services/service';
 import { socioStore } from '@/store/user';
 import type { FeedItem } from '@/types/feed';
-import type { AuthUser } from '@/types/user-auth';
+// import type { AuthUser } from '@/types/user-auth';
+import { Capitalize } from '@/utils/capitalize';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Heart, MessageSquareText } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { Header } from '../layouts/header';
-import { Button } from '../ui/button';
-import { Capitalize } from '@/utils/capitalize';
 import { toast } from 'sonner';
-import { UserAvatar } from '../layouts/user-avatar';
 import { Footer } from '../layouts/footer';
+import { Header } from '../layouts/header';
+import { UserAvatar } from '../layouts/user-avatar';
 
 export const Timeline = () => {
-  const [user, setUser] = useState<AuthUser>();
+  // const [user, setUser] = useState<AuthUser>();
   const [feeds, setFeeds] = useState<FeedItem[]>([]);
   const userlogin = socioStore((s) => s.authData);
   const navigate = useNavigate();
@@ -27,7 +26,7 @@ export const Timeline = () => {
       navigate('/');
       return;
     }
-    setUser(userlogin?.user);
+    // setUser(userlogin?.user);
     // console.log(token);
     const getFeed = async () => {
       try {
@@ -68,8 +67,8 @@ export const Timeline = () => {
     <>
       <Header />
       <div className='mx-auto mt-10 w-full max-w-150'>
-        selamat datang {user?.name}
-        <div className='flex gap-3'>
+        {/* selamat datang {user?.name} */}
+        {/* <div className='flex gap-3'>
           <Button
             onClick={() => {
               navigate('/register');
@@ -90,7 +89,7 @@ export const Timeline = () => {
           <Link to='/user-search'>
             <Button>Search</Button>
           </Link>
-        </div>
+        </div> */}
         <div className='p-2 sm:p-0'>
           {feeds.map((feed) => (
             <div key={feed.id} className='mb-12'>

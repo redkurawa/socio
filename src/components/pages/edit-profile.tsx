@@ -5,25 +5,24 @@ import {
   profileSchema,
   type ProfileFormValues,
 } from '@/schema/edit-profile-schema';
-import { GetService } from '@/services/service';
+import { GetService, PatchMulti } from '@/services/service';
 import { socioStore } from '@/store/user';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 
 export default function EditProfile() {
   const user = socioStore((s) => s.authData);
-  // const [profile, setProfile] = useState<Profile>();
 
   const {
     register,
     handleSubmit,
     setValue,
     watch,
-    // formState: { errors },
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors },
+    // formState: { errors, isSubmitting, isValid },
   } = useForm({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -35,7 +34,7 @@ export default function EditProfile() {
       avatarUrl: '',
     },
   });
-  console.log('errors', errors);
+  // console.log('errors', errors);
 
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -43,7 +42,7 @@ export default function EditProfile() {
     async function fetchProfile() {
       const r = await GetService('me', user?.token);
       // setProfile()
-      console.log(r.data.profile);
+      // console.log(r.data.profile);
       setValue('name', r.data.profile.name);
       setValue('username', r.data.profile.username);
       setValue('phone', r.data.profile.phone);
@@ -82,17 +81,17 @@ export default function EditProfile() {
       formData.append('avatar', '');
       formData.append('avatarUrl', '');
     }
-    console.log(user?.token, formData);
-    await axios.patch(
-      'https://socialmediaapi-production-fc0e.up.railway.app/api/me',
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${user?.token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
+    // console.log(user?.token, formData);
+    try {
+      await PatchMulti('me', formData, user?.token);
+      toast.success('Edit profile successfully!');
+      // reset();
+    } catch (e: any) {
+      console.error('Gagal edit:', e);
+      alert('Terjadi kesalahan saat posting edit.');
+      const msg = e?.response?.data?.message || 'Register failed';
+      toast.error(msg);
+    }
   };
 
   return (

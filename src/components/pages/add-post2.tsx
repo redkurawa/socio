@@ -1,9 +1,9 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, type FieldError } from 'react-hook-form';
 import { postSchema } from '@/schema/post-schema';
-import { PostMulti } from '@/services/service';
+import { PostService } from '@/services/service';
 import { socioStore } from '@/store/user';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
+import { useForm, type FieldError } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -42,7 +42,8 @@ export default function PostForm() {
     formData.append('caption', data.caption);
 
     try {
-      await PostMulti('posts', formData, user?.token);
+      await PostService('posts', formData, user?.token);
+      // await PostMulti('posts', formData, user?.token);
       // alert('Berhasil posting!');
       toast.success('Post added successfully!');
       reset();
