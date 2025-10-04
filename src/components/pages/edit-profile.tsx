@@ -6,7 +6,7 @@ import {
   type ProfileFormValues,
 } from '@/schema/edit-profile-schema';
 import { GetService, PatchMulti } from '@/services/service';
-import { socioStore } from '@/store/user';
+import { authStore } from '@/store/user';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
@@ -14,7 +14,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 
 export default function EditProfile() {
-  const user = socioStore((s) => s.authData);
+  const user = authStore((s) => s.authData);
 
   const {
     register,

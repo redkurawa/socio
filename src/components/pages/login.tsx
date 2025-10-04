@@ -1,6 +1,6 @@
 import { LoginSchema } from '@/schema/login-schema';
 import { PostService } from '@/services/service';
-import { socioStore } from '@/store/user';
+import { authStore } from '@/store/user';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
@@ -21,7 +21,7 @@ export const Login = () => {
     resolver: zodResolver(LoginSchema),
   });
 
-  const addAuthData = socioStore((s) => s.addAuthData);
+  const addAuthData = authStore((s) => s.addAuthData);
   const onSubmit = async (data: LoginSchema) => {
     try {
       const r = await PostService('auth/login', data);

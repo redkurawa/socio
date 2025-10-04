@@ -1,6 +1,6 @@
 import { postSchema } from '@/schema/post-schema';
 import { PostService } from '@/services/service';
-import { socioStore } from '@/store/user';
+import { authStore } from '@/store/user';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Label } from '@radix-ui/react-label';
 import { ArrowLeft } from 'lucide-react';
@@ -10,13 +10,15 @@ import { Link } from 'react-router';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { Header } from '../layouts/header';
+import { Loading } from '../layouts/loading';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 
 type PostFormData = z.infer<typeof postSchema>;
 
 export default function PostForm() {
-  const user = socioStore((s) => s.authData);
+  const [loading, setLoading] = useState(false);
+  const user = authStore((s) => s.authData);
   const {
     register,
     handleSubmit,
@@ -48,7 +50,7 @@ export default function PostForm() {
     const formData = new FormData();
     formData.append('image', file);
     formData.append('caption', data.caption);
-
+    setLoading(true);
     try {
       await PostService('posts', formData, user?.token);
       // await PostMulti('posts', formData, user?.token);
@@ -56,11 +58,14 @@ export default function PostForm() {
       toast.success('Post added successfully!');
       reset();
       setPreviewUrl(null);
+      setLoading(true);
     } catch (e: any) {
       console.error('Gagal posting:', e);
       alert('Terjadi kesalahan saat posting.');
-      const msg = e?.response?.data?.message || 'Register failed';
+      const msg = e?.response?.data?.message || 'Posting failed';
       toast.error(msg);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -102,6 +107,7 @@ export default function PostForm() {
   return (
     <>
       <Header />
+
       <div className='mx-auto mt-10 w-full max-w-113'>
         <Link to='/timeline'>
           <h1 className='flex items-center gap-3'>
@@ -230,6 +236,11 @@ export default function PostForm() {
           </Button>
         </form>
       </div>
+      {loading && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/50'>
+          <Loading loading={loading} />
+        </div>
+      )}
     </>
   );
 }

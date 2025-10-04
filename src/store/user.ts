@@ -8,7 +8,7 @@ interface AuthStore {
   addAuthData: (authData: AuthData) => void;
 }
 
-export const socioStore = create<AuthStore>((set) => ({
+export const authStore = create<AuthStore>((set) => ({
   authData: null,
   addAuthData: (authData) => set({ authData }),
 }));

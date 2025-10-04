@@ -1,4 +1,4 @@
-import { socioStore } from '@/store/user';
+import { authStore } from '@/store/user';
 import { Menu } from 'lucide-react';
 import { Link } from 'react-router';
 import { Button } from '../ui/button';
@@ -15,7 +15,7 @@ import {
 import { DropDownUserMenu } from './dropdown-user';
 
 export const Header = () => {
-  const user = socioStore((s) => s.authData);
+  const user = authStore((s) => s.authData);
   // useEffect(() => {
   //   if (user) {
   //     console.log(user);

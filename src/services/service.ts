@@ -19,10 +19,10 @@ const PostService = async (
 ) => {
   try {
     // console.log('queryPath :', queryPath);
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
-    const r = await api.post(queryPath, payload, { headers });
     // console.log('Payload:', payload);
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
     // console.log('Headers:', headers);
+    const r = await api.post(queryPath, payload, { headers });
     return r;
   } catch (error: any) {
     if (error.response) {
@@ -67,4 +67,24 @@ const PatchMulti = async (url: string = '', formData?: any, token?: string) => {
   }
 };
 
-export { GetService, PostMulti, PostService, PatchMulti };
+const DelService = async (queryPath: string = '', token?: string) => {
+  try {
+    // console.log('queryPath :', queryPath);
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const r = await api.delete(queryPath, { headers });
+    // console.log('Headers:', headers);
+    console.log('delete response :', r);
+    return r;
+  } catch (error: any) {
+    if (error.response) {
+      console.log('❌ Backend error:', error.response.data);
+      console.log('📄 Status:', error.response.status);
+      console.log('📦 Headers:', error.response.headers);
+    } else {
+      console.log('Unexpected error:', error.message);
+    }
+    throw error;
+  }
+};
+
+export { GetService, PostMulti, PostService, PatchMulti, DelService };

@@ -1,12 +1,12 @@
 import { GetService, PostService } from '@/services/service';
 import type { User } from '@/types/user-search';
 import { useEffect, useState } from 'react';
-import { Button } from '../ui/button';
-import { socioStore } from '@/store/user';
 import { toast } from 'sonner';
+import { Button } from '../ui/button';
+import { authStore } from '@/store/user';
 
 export const UserSearch = () => {
-  const user = socioStore((s) => s.authData);
+  const user = authStore((s) => s.authData);
   useEffect(() => {
     if (user) {
       console.log(user);

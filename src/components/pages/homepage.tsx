@@ -1,11 +1,11 @@
-import { socioStore } from '@/store/user';
+import { authStore } from '@/store/user';
 import type { AuthUser } from '@/types/user-auth';
 import { useEffect, useState } from 'react';
 
 export const Homepage = () => {
   const [user, setUser] = useState<AuthUser>();
 
-  const userlogin = socioStore((s) => s.authData);
+  const userlogin = authStore((s) => s.authData);
 
   useEffect(() => {
     if (!userlogin?.token) return;
