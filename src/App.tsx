@@ -4,9 +4,11 @@ import Login from './components/pages/login';
 import { PostDetail } from './components/pages/post-detail';
 import { UserProfile } from './components/pages/profile';
 import Register from './components/pages/register';
-import { Timeline } from './components/pages/timeline';
+// import { Timeline } from './components/pages/timeline';
 import { UserSearch } from './components/pages/user-search';
 import { Toaster } from './components/ui/sonner';
+import { Timeline } from './components/pages/timeline3';
+// import { Timeline } from './components/pages/timeline2';
 
 function App() {
   const location = useLocation();

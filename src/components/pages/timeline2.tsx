@@ -8,15 +8,20 @@ import { Capitalize } from '@/utils/capitalize';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { Bookmark, Heart, MessageSquareText } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Footer } from '../layouts/footer';
 import { Header } from '../layouts/header';
 import { UserLike } from '../layouts/like-dialog';
 import { StatPage } from '../layouts/pagination';
 import { UserAvatar } from '../layouts/user-avatar';
-// import { UserLike } from '../layouts/like-dialog';
+
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import type { InfiniteData } from '@tanstack/react-query';
+
+type FeedResponse = { items: FeedItem[]; pagination: Pagination };
+type SavedResponse = { posts: any[] };
 
 export const Timeline = () => {
   const [feeds, setFeeds] = useState<FeedItem[]>([]);
@@ -30,14 +35,94 @@ export const Timeline = () => {
   dayjs.extend(relativeTime);
 
   const user = authStore((s) => s.authData);
-  // cek apakah sudah login atau belum
+
   useEffect(() => {
-    if (!user) {
-      navigate('/login');
-    }
+    if (!user) navigate('/login');
   }, [user, navigate]);
 
-  // fungsi untuk handle like dislike
+  // ===== Saved / Bookmark (tetap simple, tanpa ubah store) =====
+  const addbookmark = bookmarkStore((s) => s.addBookmark);
+  const savedQuery = useQuery<SavedResponse>({
+    queryKey: ['saved'],
+    enabled: !!user?.token,
+    queryFn: async () => {
+      const r = await GetService('me/saved', user!.token);
+      return r.data as SavedResponse;
+    },
+  });
+  useEffect(() => {
+    if (savedQuery.data?.posts) {
+      savedQuery.data.posts.forEach((item) => addbookmark(item));
+    }
+  }, [savedQuery.data, addbookmark]);
+
+  // ===== Feed: Infinite Query =====
+  const limit = 20;
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  const feedQuery = useInfiniteQuery<
+    FeedResponse,
+    Error,
+    FeedResponse,
+    readonly ['feed', { limit: number }],
+    number
+  >({
+    queryKey: ['feed', { limit }] as const,
+    enabled: !!user?.token,
+    initialPageParam: 1,
+    queryFn: async ({ pageParam }) => {
+      const r = await GetService(
+        `feed?page=${pageParam}&limit=${limit}`,
+        user!.token
+      );
+      console.log(r.data);
+      return r.data as FeedResponse;
+    },
+    getNextPageParam: (lastPage, allPages) => {
+      const p: any = lastPage?.pagination;
+      if (p?.nextPage) return p.nextPage as number;
+      if (p?.currentPage && p?.totalPages) {
+        return p.currentPage < p.totalPages ? p.currentPage + 1 : undefined;
+      }
+      const lastItems = lastPage?.items ?? [];
+      return lastItems.length === limit ? allPages.length + 1 : undefined;
+    },
+  });
+
+  useEffect(() => {
+    const pages =
+      (feedQuery.data as InfiniteData<FeedResponse> | undefined)?.pages ?? [];
+    setFeeds(pages.flatMap((p: FeedResponse) => p.items ?? []));
+    const last = pages[pages.length - 1];
+    if (last?.pagination) setPage(last.pagination);
+  }, [feedQuery.data]);
+
+  useEffect(() => {
+    const el = loadMoreRef.current;
+    if (!el) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (
+          entries[0].isIntersecting &&
+          feedQuery.hasNextPage &&
+          !feedQuery.isFetchingNextPage
+        ) {
+          feedQuery.fetchNextPage();
+        }
+      },
+      { rootMargin: '200px' }
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
+  }, [
+    feedQuery.hasNextPage,
+    feedQuery.isFetchingNextPage,
+    feedQuery.fetchNextPage,
+  ]);
+
+  // ===== Like / Dislike (tanpa perubahan lain) =====
   const handleLike = async (feedId: number, byMe: boolean) => {
     try {
       const r = byMe
@@ -47,14 +132,8 @@ export const Timeline = () => {
       const updatedLike: Like = r.data.data;
       const { liked: likedByMe, likeCount } = updatedLike;
 
-      setFeeds((prevFeeds) =>
-        prevFeeds.map((feed) => {
-          if (feed.id !== feedId) return feed;
-          if (feed.likedByMe === likedByMe && feed.likeCount === likeCount) {
-            return feed;
-          }
-          return { ...feed, likedByMe, likeCount };
-        })
+      setFeeds((prev) =>
+        prev.map((f) => (f.id === feedId ? { ...f, likedByMe, likeCount } : f))
       );
 
       if (r.data.message === 'Already liked') {
@@ -69,47 +148,35 @@ export const Timeline = () => {
       );
       console.log(like);
       toast.success(r.data.message);
-      // console.log('Like response:', updatedLike);
     } catch (e: any) {
-      console.error('Failed to like post:', e);
       const msg = e?.response?.data?.message || 'post review failed';
       toast.error(msg);
     }
   };
 
-  // fugsi untuk handel bookmark/save page
-  const addbookmark = bookmarkStore((s) => s.addBookmark);
-  useEffect(() => {
-    if (!user?.token) return;
-    const getBookmark = async () => {
-      const r = await GetService('me/saved', user?.token);
-      // console.log('Items before addBookmark:', r.data.posts);
-      addbookmark(r.data.posts);
-      return r;
-    };
-    getBookmark();
-  }, []);
+  if (feedQuery.isLoading) {
+    return (
+      <>
+        <Header />
+        <div className='mx-auto mt-10 w-full max-w-150 p-2 text-[#FDFDFD] sm:p-0'>
+          Memuat feed...
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
-  // <pre className='text-white'>{JSON.stringify(savebook, null, 2)}</pre>;
-
-  useEffect(() => {
-    const token = user?.token;
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-    const getFeed = async () => {
-      try {
-        const r = await GetService('feed?page=1&limit=20', token);
-        // console.log(r.data.items);
-        setFeeds(r.data.items);
-        setPage(r.data.pagination);
-      } catch (e) {
-        console.error(e);
-      }
-    };
-    getFeed();
-  }, []);
+  if (feedQuery.isError) {
+    return (
+      <>
+        <Header />
+        <div className='mx-auto mt-10 w-full max-w-150 p-2 text-red-400 sm:p-0'>
+          Gagal memuat feed.
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -160,7 +227,7 @@ export const Timeline = () => {
                   </Link>
                   <img src='/icons/share.svg' alt='' className='bg-black' />
                 </div>
-                <Bookmark />
+                <Bookmark className='fill-white' />
               </div>
               <div className='text-md font-bold text-[#FDFDFD]'>
                 {Capitalize(feed.author.name)}
@@ -169,6 +236,14 @@ export const Timeline = () => {
             </div>
           ))}
         </div>
+
+        {/* Sentinel untuk auto-load */}
+        <div ref={loadMoreRef} className='h-8 w-full' />
+        {feedQuery.isFetchingNextPage && (
+          <div className='mx-auto my-4 w-full max-w-150 p-2 text-[#FDFDFD] sm:p-0'>
+            Memuat lagi...
+          </div>
+        )}
       </div>
       <Footer />
     </>

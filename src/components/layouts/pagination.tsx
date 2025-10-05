@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 // type PageProps = { page: Pagination };
 
 // export const Page = ({ page }: PageProps) => {
-export const Page = (page: Pagination) => {
+export const StatPage = (page: Pagination) => {
   return (
     <div className='mt-5 flex w-full items-center justify-center gap-5'>
       <div>limit : {page?.limit}</div>

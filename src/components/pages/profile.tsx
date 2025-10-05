@@ -7,6 +7,8 @@ import { Header } from '../layouts/header';
 import type { Profile, Stats } from '@/types/user-profile';
 import { Button } from '../ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { AuthorImages } from '../layouts/AuthorImages';
+import SavedGallery from '../layouts/save-page';
 
 export const UserProfile = () => {
   const [user, setUser] = useState<Profile>();
@@ -85,9 +87,13 @@ export const UserProfile = () => {
             <TabsTrigger value='saved'>Saved</TabsTrigger>
           </TabsList>
           <TabsContent value='gallery'>
-            Make changes to your account here.
+            {userlogin?.user.id && (
+              <AuthorImages authorId={userlogin?.user.id} />
+            )}
           </TabsContent>
-          <TabsContent value='saved'>Change your password here.</TabsContent>
+          <TabsContent value='saved'>
+            <SavedGallery />
+          </TabsContent>
         </Tabs>
       </div>
     </>
