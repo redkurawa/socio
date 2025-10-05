@@ -18,7 +18,9 @@ type PostFormData = z.infer<typeof postSchema>;
 
 export default function PostForm() {
   const [loading, setLoading] = useState(false);
+
   const user = authStore((s) => s.authData);
+
   const {
     register,
     handleSubmit,
@@ -80,14 +82,8 @@ export default function PostForm() {
     }
   }, [watchedImage]);
 
-  // const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    // if (file) {
-    //   const url = URL.createObjectURL(file);
-    //   setPreviewUrl(url);
-    // }
     if (file) {
       const url = URL.createObjectURL(file);
       console.log('🖼️ Preview URL set:', url);
@@ -100,7 +96,6 @@ export default function PostForm() {
   const handleRemoveImage = () => {
     console.log('❌ Removing image');
     setPreviewUrl(null);
-    // Optional: reset field di react-hook-form
     setValue('image', null);
   };
 

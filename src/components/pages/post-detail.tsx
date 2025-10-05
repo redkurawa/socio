@@ -1,7 +1,7 @@
 import { GetService, PostService } from '@/services/service';
 import type { Comment } from '@/types/comment';
 import type { FeedItem } from '@/types/feed';
-import { Bookmark, Heart, MessageSquareText } from 'lucide-react';
+import { ArrowLeft, Bookmark, Heart, MessageSquareText } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { Header } from '../layouts/header';
@@ -105,7 +105,15 @@ export const PostDetail = () => {
   return (
     <>
       <Header />
-      <div className='mt-10'>
+      <div className='sm-container'>
+        <div className='py-10'>
+          <Link to='/timeline'>
+            <div className='flex items-center gap-3'>
+              <ArrowLeft className='size-8 text-white' />
+              <span className='text-2xl font-bold'>Back</span>
+            </div>
+          </Link>
+        </div>
         {details ? (
           <div className='mx-auto w-full max-w-300 p-3 md:p-0 lg:flex'>
             <img

@@ -2,8 +2,9 @@ import { api } from './api';
 
 const GetService = async (queryPath: string = '', token?: string) => {
   try {
-    // console.log('queryPath :', queryPath);
+    console.log('queryPath :', queryPath);
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    console.log('Headers:', headers);
     const r = await api.get(queryPath, { headers });
     return r.data;
   } catch (error: any) {

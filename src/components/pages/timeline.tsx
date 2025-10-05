@@ -15,51 +15,34 @@ import { Header } from '../layouts/header';
 import { Page } from '../layouts/pagination';
 import { UserAvatar } from '../layouts/user-avatar';
 import { bookmarkStore } from '@/store/bookmark';
+import { UserLike } from '../layouts/like-dialog';
+// import { UserLike } from '../layouts/like-dialog';
 
 export const Timeline = () => {
   const [feeds, setFeeds] = useState<FeedItem[]>([]);
   const [page, setPage] = useState<Pagination>();
   const [like, setLike] = useState<Like>();
+  const [activeLikeDialogId, setActiveLikeDialogId] = useState<number | null>(
+    null
+  );
+
   const navigate = useNavigate();
   dayjs.extend(relativeTime);
 
-  const userlogin = authStore((s) => s.authData);
+  const user = authStore((s) => s.authData);
+  // cek apakah sudah login atau belum
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
 
-  // const handleLike = async (feedId: number, byMe: boolean) => {
-  //   console.log(byMe);
-  //   try {
-  //     const r = await PostService(
-  //       `posts/${feedId}/like`,
-  //       undefined,
-  //       userlogin?.token
-  //     );
-  //     setLike(r.data.data);
-  //     console.log('Like response:', r.data.data);
-  //     const { liked: likedByMe, likeCount } = r.data.data;
-  //     if (r.data.message == 'Already liked') {
-  //       toast.warning(r.data.message);
-  //     }
-  //     setFeeds((prevFeeds) =>
-  //       prevFeeds.map((feed) =>
-  //         feed.id === feedId ? { ...feed, likedByMe, likeCount } : feed
-  //       )
-  //     );
-  //   } catch (e: any) {
-  //     console.error('Failed to like post:', e);
-  //     const msg = e?.response?.data?.message || 'post review failed';
-  //     toast.error(msg);
-  //   }
-  // };
-
+  // fungsi untuk handle like dislike
   const handleLike = async (feedId: number, byMe: boolean) => {
     try {
       const r = byMe
-        ? await DelService(`posts/${feedId}/like`, userlogin?.token)
-        : await PostService(
-            `posts/${feedId}/like`,
-            undefined,
-            userlogin?.token
-          );
+        ? await DelService(`posts/${feedId}/like`, user?.token)
+        : await PostService(`posts/${feedId}/like`, undefined, user?.token);
 
       const updatedLike: Like = r.data.data;
       const { liked: likedByMe, likeCount } = updatedLike;
@@ -94,11 +77,12 @@ export const Timeline = () => {
     }
   };
 
+  // fugsi untuk handel bookmark/save page
   const addbookmark = bookmarkStore((s) => s.addBookmark);
   useEffect(() => {
-    if (!userlogin?.token) return;
+    if (!user?.token) return;
     const getBookmark = async () => {
-      const r = await GetService('me/saved', userlogin?.token);
+      const r = await GetService('me/saved', user?.token);
       // console.log('Items before addBookmark:', r.data.posts);
       addbookmark(r.data.posts);
       return r;
@@ -109,7 +93,7 @@ export const Timeline = () => {
   // <pre className='text-white'>{JSON.stringify(savebook, null, 2)}</pre>;
 
   useEffect(() => {
-    const token = userlogin?.token;
+    const token = user?.token;
     if (!token) {
       navigate('/login');
       return;
@@ -129,7 +113,6 @@ export const Timeline = () => {
 
   return (
     <>
-      {!userlogin ? navigate('/login') : <div></div>}
       <Header />
       {page && <Page {...page} />}
 
@@ -144,7 +127,7 @@ export const Timeline = () => {
                 className='w-full max-w-150 overflow-hidden rounded-[8px] object-cover'
               />
               <div className='my-3 flex justify-between'>
-                <div className='flex gap-3'>
+                <div className='flex items-center gap-1'>
                   <div
                     onClick={() => handleLike(feed.id, feed.likedByMe)}
                     className='flex cursor-pointer gap-1'
@@ -152,7 +135,21 @@ export const Timeline = () => {
                     <Heart
                       className={`${feed.likedByMe ? 'fill-red-500 text-red-700' : ''}`}
                     />
-                    <span>{feed.likeCount}</span>
+                  </div>
+                  <div>
+                    <div
+                      onClick={() => setActiveLikeDialogId(feed.id)}
+                      className='hover:bg-primary-300 flex-center size-7 cursor-pointer font-medium hover:rounded-full hover:underline'
+                    >
+                      {feed.likeCount}
+                    </div>
+
+                    {activeLikeDialogId === feed.id && (
+                      <UserLike
+                        id={feed.id}
+                        onClose={() => setActiveLikeDialogId(null)}
+                      />
+                    )}
                   </div>
                   <Link
                     to={`/posts/${feed.id}`}

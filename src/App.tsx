@@ -1,8 +1,8 @@
 import { Route, Routes, useLocation } from 'react-router';
 import PostForm from './components/pages/add-post2';
-import EditProfile from './components/pages/edit-profile';
 import Login from './components/pages/login';
 import { PostDetail } from './components/pages/post-detail';
+import { UserProfile } from './components/pages/profile';
 import Register from './components/pages/register';
 import { Timeline } from './components/pages/timeline';
 import { UserSearch } from './components/pages/user-search';
@@ -24,7 +24,7 @@ function App() {
           <Route path='/user-search' element={<UserSearch />} />
           <Route path='/timeline' element={<Timeline />} />
           <Route path='/posts/:id' element={<PostDetail />} />
-          <Route path='/profile' element={<EditProfile />} />
+          <Route path='/profile' element={<UserProfile />} />
         </Routes>
       </div>
       <Toaster position='top-center' richColors />
