@@ -3,7 +3,7 @@ import type { Comment } from '@/types/comment';
 import type { FeedItem } from '@/types/feed';
 import { ArrowLeft, Bookmark, Heart, MessageSquareText } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { Header } from '../layouts/header';
 import { UserAvatar } from '../layouts/user-avatar';
 import { Button } from '../ui/button';
@@ -17,6 +17,7 @@ export const PostDetail = () => {
   const [comment, setComment] = useState<string>('');
   const { id } = useParams();
 
+  const navigate = useNavigate();
   const user = authStore((s) => s.authData);
 
   const url = `posts/${id}`;
@@ -97,9 +98,13 @@ export const PostDetail = () => {
   const handleDelete = async (id: number) => {
     try {
       const r = await DelService(`posts/${id}`, user?.token);
-      console.log('delete :', r);
+      console.log('delete :', r.data.message);
+      navigate('/timeline');
+      toast.success(r.data.message);
     } catch (e: any) {
       console.error(e);
+      const msg = e?.response?.data?.message || 'Delete failed';
+      toast.error(msg);
     }
   };
 

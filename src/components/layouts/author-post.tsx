@@ -1,5 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import type { FeedItem } from '@/types/feed';
+import { Link } from 'react-router';
 
 export function AuthorPost({ authorId }: { authorId: number }) {
   const queryClient = useQueryClient();
@@ -26,11 +27,13 @@ export function AuthorPost({ authorId }: { authorId: number }) {
           key={it.id}
           className='h-[270px] w-full overflow-hidden rounded-[8px]'
         >
-          <img
-            src={it.imageUrl}
-            alt=''
-            className='h-full w-full object-cover'
-          />
+          <Link to={`/posts/${it.id}`} className='cursor-pointer'>
+            <img
+              src={it.imageUrl}
+              alt=''
+              className='h-full w-full object-cover'
+            />
+          </Link>
         </div>
       ))}
     </div>

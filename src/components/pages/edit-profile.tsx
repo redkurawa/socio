@@ -257,7 +257,7 @@ export default function EditProfile() {
       toast.success('Edit profile successfully!');
     } catch (e: any) {
       console.error('Gagal edit:', e);
-      const msg = e?.response?.data?.message || 'Register failed';
+      const msg = e?.response?.data?.message || 'Edit failed';
       toast.error(msg);
     }
   };
