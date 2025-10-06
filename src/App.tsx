@@ -27,7 +27,7 @@ function App() {
           <Route path='/user-search' element={<UserSearch />} />
           <Route path='/timeline' element={<Timeline />} />
           <Route path='/posts/:id' element={<PostDetail />} />
-          <Route path='/profile' element={<UserProfile />} />
+          <Route path='/profile/:username' element={<UserProfile />} />
           <Route path='/edit' element={<EditProfile />} />
         </Routes>
       </div>

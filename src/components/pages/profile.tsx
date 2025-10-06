@@ -1,26 +1,27 @@
 import { GetService } from '@/services/service';
 import { authStore } from '@/store/user';
+import type { userProfile } from '@/types/profile';
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useParams } from 'react-router';
+import { AuthorImages } from '../layouts/AuthorImages';
 import { Header } from '../layouts/header';
-import type { Profile, Stats } from '@/types/user-profile';
+import SavedGallery from '../layouts/save-page';
 import { Button } from '../ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
-import { AuthorImages } from '../layouts/AuthorImages';
-import SavedGallery from '../layouts/save-page';
 
 export const UserProfile = () => {
-  const [user, setUser] = useState<Profile>();
-  const [stat, setStat] = useState<Stats>();
+  const [user, setUser] = useState<userProfile>();
+  const { username } = useParams();
+
   const userlogin = authStore((s) => s.authData);
   useEffect(() => {
     const getProfile = async () => {
+      console.log('username dari params :', username);
       try {
-        const r = await GetService('me', userlogin?.token);
+        const r = await GetService(`users/${username}`, userlogin?.token);
         console.log(r.data);
-        setUser(r.data.profile);
-        setStat(r.data.stats);
+        setUser(r.data);
       } catch (e: any) {
         console.error(e);
       }
@@ -28,9 +29,13 @@ export const UserProfile = () => {
     getProfile();
   }, []);
 
+  useEffect(() => {
+    console.log('setUser :', user);
+  }, [user]);
   return (
     <>
       <Header />
+      {user?.bio}
       <div className='mx-auto w-full max-w-203'>
         <div className='py-10'>
           <Link to='/timeline'>
@@ -56,42 +61,44 @@ export const UserProfile = () => {
               <div className='font-normal'>{user?.username}</div>
             </div>
           </div>
-          <Button className='cursor-pointer' variant={'secondary'}>
-            <Link to='/edit'>Edit Profile</Link>
-          </Button>
+          {username == userlogin?.user.username && (
+            <Button className='cursor-pointer' variant={'secondary'}>
+              <Link to='/edit'>Edit Profile</Link>
+            </Button>
+          )}
         </div>
         <div className='py-4'>{user?.bio}</div>
         <div className='flex justify-between pb-4'>
           <div className='flex-1 border-r border-neutral-700 text-center'>
-            <div className='text-xl font-bold'>{stat?.posts}</div>
+            <div className='text-xl font-bold'>{user?.counts.post}</div>
             <div className='text-md font-normal text-neutral-400'>Post</div>
           </div>
           <div className='flex-1 border-r border-neutral-700 text-center'>
-            <div className='text-xl font-bold'>{stat?.followers}</div>
+            <div className='text-xl font-bold'>{user?.counts.followers}</div>
             <div className='text-md font-normal text-neutral-400'>
               Followers
             </div>
           </div>
           <div className='flex-1 border-r border-neutral-700 text-center'>
-            <div className='text-xl font-bold'>{stat?.following}</div>
+            <div className='text-xl font-bold'>{user?.counts.following}</div>
             <div className='text-md font-normal text-neutral-400'>
               Following
             </div>
           </div>
           <div className='flex-1 text-center'>
-            <div className='text-xl font-bold'>{stat?.likes}</div>
+            <div className='text-xl font-bold'>{user?.counts.likes}</div>
             <div className='text-md font-normal text-neutral-400'>Likes</div>
           </div>
         </div>
         <Tabs defaultValue='gallery' className=''>
           <TabsList className='w-full'>
             <TabsTrigger value='gallery'>Gallery</TabsTrigger>
-            <TabsTrigger value='saved'>Saved</TabsTrigger>
+            {username == userlogin?.user.username && (
+              <TabsTrigger value='saved'>Saved</TabsTrigger>
+            )}
           </TabsList>
           <TabsContent value='gallery'>
-            {userlogin?.user.id && (
-              <AuthorImages authorId={userlogin?.user.id} />
-            )}
+            {user?.id && <AuthorImages authorId={user?.id} />}
           </TabsContent>
           <TabsContent value='saved'>
             <SavedGallery />

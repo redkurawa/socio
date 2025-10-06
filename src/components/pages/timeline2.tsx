@@ -40,7 +40,6 @@ export const Timeline = () => {
     if (!user) navigate('/login');
   }, [user, navigate]);
 
-  // ===== Saved / Bookmark (tetap simple, tanpa ubah store) =====
   const addbookmark = bookmarkStore((s) => s.addBookmark);
   const savedQuery = useQuery<SavedResponse>({
     queryKey: ['saved'],
@@ -56,7 +55,6 @@ export const Timeline = () => {
     }
   }, [savedQuery.data, addbookmark]);
 
-  // ===== Feed: Infinite Query =====
   const limit = 20;
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 

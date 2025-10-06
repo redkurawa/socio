@@ -5,10 +5,12 @@ import type { userLike } from '@/types/user-like';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
+import { Link } from 'react-router';
 
 interface UserLikeProps {
   id: number;
   onClose: () => void;
+  type: 'like' | 'following' | 'follower';
 }
 
 // const PostServiceAlias = PostService || GetService;
@@ -99,19 +101,21 @@ export const UserLike = ({ id, onClose }: UserLikeProps) => {
                 key={userlike.id}
                 className='flex items-center justify-between'
               >
-                <div className='flex items-center space-x-3'>
-                  <div className='h-12 w-12 overflow-hidden rounded-full bg-gray-200'>
-                    <img
-                      src={userlike.avatarUrl}
-                      alt={userlike.name}
-                      className='h-full w-full object-cover'
-                    />
+                <Link to={`/profile/${userlike.username}`}>
+                  <div className='flex items-center space-x-3'>
+                    <div className='h-12 w-12 overflow-hidden rounded-full bg-gray-200'>
+                      <img
+                        src={userlike.avatarUrl}
+                        alt={userlike.name}
+                        className='h-full w-full object-cover'
+                      />
+                    </div>
+                    <div className='text-sm'>
+                      <div className='font-bold'>{userlike.name}</div>
+                      <div className='font-normal'>{userlike.username}</div>
+                    </div>
                   </div>
-                  <div className='text-sm'>
-                    <div className='font-bold'>{userlike.name}</div>
-                    <div className='font-normal'>{userlike.username}</div>
-                  </div>
-                </div>
+                </Link>
                 {/* Tombol Follow/Unfollow hanya muncul jika BUKAN user sendiri */}
                 {!userlike.isMe && (
                   <Button
@@ -121,7 +125,7 @@ export const UserLike = ({ id, onClose }: UserLikeProps) => {
                     variant={
                       userlike.isFollowedByMe ? 'secondary' : 'secondary'
                     }
-                    className='h-8 px-3 text-sm' // Sesuaikan styling button jika perlu
+                    className='h-8 px-3 text-sm'
                   >
                     {userlike.isFollowedByMe ? 'Unfollow' : 'Follow'}
                   </Button>
