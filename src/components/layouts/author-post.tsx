@@ -1,12 +1,12 @@
 import { useQueryClient } from '@tanstack/react-query';
 import type { FeedItem } from '@/types/feed';
 
-export function AuthorImages({ authorId }: { authorId: number }) {
+export function AuthorPost({ authorId }: { authorId: number }) {
   const queryClient = useQueryClient();
 
   const cached = queryClient.getQueryData<{
     pages: { items: FeedItem[] }[];
-  }>(['feed', { limit: 20 }]);
+  }>(['feed', { limit: 10 }]);
 
   const items =
     cached?.pages

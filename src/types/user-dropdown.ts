@@ -6,16 +6,16 @@ interface UserDropDown {
 export const userDropDown: UserDropDown[] = [
   {
     label: 'Profile',
-    href: '/user/profile',
+    href: '/profile',
   },
-  {
-    label: 'Borrow List',
-    href: '/user/borrow',
-  },
-  {
-    label: 'Reviews',
-    href: '/user/review',
-  },
+  // {
+  //   label: 'Borrow List',
+  //   href: '/user/borrow',
+  // },
+  // {
+  //   label: 'Reviews',
+  //   href: '/user/review',
+  // },
   {
     label: 'Logout',
     href: '/logout',

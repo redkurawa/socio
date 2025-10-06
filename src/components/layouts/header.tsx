@@ -16,11 +16,6 @@ import { DropDownUserMenu } from './dropdown-user';
 
 export const Header = () => {
   const user = authStore((s) => s.authData);
-  // useEffect(() => {
-  //   if (user) {
-  //     console.log(user);
-  //   }
-  // }, [user]);
 
   return (
     <div className='h-20 border-b border-neutral-800 px-1'>
@@ -44,7 +39,7 @@ export const Header = () => {
                 ) : (
                   <div className='size-16 rounded-full bg-neutral-800'></div>
                 )}
-                {user.user.name}
+                <div className='hidden sm:block'>{user.user.name}</div>
               </div>
             </DropdownMenuTrigger>
             <DropDownUserMenu />
@@ -67,7 +62,7 @@ export const Header = () => {
                 <SheetTrigger>
                   <Menu />
                 </SheetTrigger>
-                <SheetContent side='top' className='w-full'>
+                <SheetContent side='top' className='w-full bg-black/10'>
                   <SheetHeader>
                     <SheetTitle></SheetTitle>
                     <SheetDescription></SheetDescription>

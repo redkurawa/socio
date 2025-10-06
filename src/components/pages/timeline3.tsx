@@ -14,7 +14,6 @@ import { toast } from 'sonner';
 import { Footer } from '../layouts/footer';
 import { Header } from '../layouts/header';
 import UserLike from '../layouts/like-dialog';
-import { StatPage } from '../layouts/pagination';
 import { UserAvatar } from '../layouts/user-avatar';
 
 import {
@@ -30,6 +29,7 @@ type SavedResponse = { posts: FeedItem[] };
 export const Timeline = () => {
   const [feeds, setFeeds] = useState<FeedItem[]>([]);
   const [page, setPage] = useState<Pagination>();
+
   // const [like, setLike] = useState<Like>();
   const [activeLikeDialogId, setActiveLikeDialogId] = useState<number | null>(
     null
@@ -66,10 +66,7 @@ export const Timeline = () => {
     }
   }, [savedQuery.data, addbookmark]);
 
-  // =====================================================
-  // FEED QUERY (INFINITE)
-  // =====================================================
-  const limit = 20;
+  const limit = 10;
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const feedQuery = useInfiniteQuery<
@@ -106,6 +103,7 @@ export const Timeline = () => {
     setFeeds(pages.flatMap((p: FeedResponse) => p.items ?? []));
     const last = pages[pages.length - 1];
     if (last?.pagination) setPage(last.pagination);
+    console.log(page);
   }, [feedQuery.data]);
 
   useEffect(() => {
@@ -133,9 +131,6 @@ export const Timeline = () => {
     feedQuery.fetchNextPage,
   ]);
 
-  // =====================================================
-  // HANDLE LIKE (TETAP)
-  // =====================================================
   const handleLike = async (feedId: number, byMe: boolean) => {
     try {
       const r = byMe
@@ -156,9 +151,6 @@ export const Timeline = () => {
     }
   };
 
-  // =====================================================
-  // HANDLE BOOKMARK SAVE / UNSAVE
-  // =====================================================
   const handleBookmark = async (feedId: number) => {
     try {
       const cached = queryClient.getQueryData<SavedResponse>(['saved']);
@@ -180,9 +172,6 @@ export const Timeline = () => {
     }
   };
 
-  // =====================================================
-  // RENDER
-  // =====================================================
   if (feedQuery.isLoading) {
     return (
       <>
@@ -214,18 +203,20 @@ export const Timeline = () => {
   return (
     <>
       <Header />
-      {page && <StatPage {...page} />}
+      {/* {page && <StatPage {...page} />} */}
 
       <div className='mx-auto mt-10 w-full max-w-150'>
-        <div className='p-2 sm:p-0'>
+        <div className='px-3 sm:p-0'>
           {feeds.map((feed) => (
             <div key={feed.id} className='mb-12'>
               <UserAvatar a={feed.author} c={feed.createdAt} />
-              <img
-                src={feed.imageUrl}
-                alt=''
-                className='w-full max-w-150 overflow-hidden rounded-[8px] object-cover'
-              />
+              <Link to={`/posts/${feed.id}`} className='cursor-pointer'>
+                <img
+                  src={feed.imageUrl}
+                  alt=''
+                  className='w-full max-w-150 overflow-hidden rounded-[8px] object-cover'
+                />
+              </Link>
               <div className='my-3 flex justify-between'>
                 <div className='flex items-center gap-1'>
                   <div

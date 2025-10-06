@@ -102,7 +102,6 @@ export default function PostForm() {
   return (
     <>
       <Header />
-
       <div className='mx-auto mt-10 w-full max-w-113'>
         <Link to='/timeline'>
           <h1 className='flex items-center gap-3'>
@@ -111,50 +110,12 @@ export default function PostForm() {
           </h1>
         </Link>
         <form onSubmit={handleSubmit(onSubmit)} className='mt-6 space-y-4'>
-          {/* <div>
-            <Label className='text-sm'>Photo</Label>
-            <div className='relative'>
-              <input
-                type='file'
-                accept='image/*'
-                {...register('image')}
-                id='image-upload'
-                className='hidden' // sembunyikan input asli
-              />
-              <label
-                htmlFor='image-upload'
-                className='flex w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-neutral-800 bg-neutral-900/80 py-6 text-center transition hover:bg-neutral-800'
-              >
-                <span className='font-semibold text-purple-400'>
-                  Click to upload
-                </span>
-                <span className='text-sm text-neutral-400'>
-                  or drag and drop
-                </span>
-              </label>
-            </div>
-
-            {(errors.image as FieldError | undefined)?.message && (
-              <p className='text-red-500'>
-                {(errors.image as FieldError).message}
-              </p>
-            )}
-
-            {previewUrl && (
-              <img
-                src={previewUrl}
-                alt='Preview'
-                className='mt-2 max-w-xs rounded'
-              />
-            )}
-          </div> */}
-
           <div
             className='relative w-full overflow-hidden rounded-xl border border-dashed border-neutral-800 bg-neutral-900/80 text-center'
             style={{
-              aspectRatio: '3 / 2', // opsional, bisa diganti sesuai rasio ideal
+              aspectRatio: '3 / 2',
               maxHeight: '50vh',
-              maxWidth: '50vw',
+              // maxWidth: '50vw',
               backgroundImage: previewUrl ? `url(${previewUrl})` : undefined,
               backgroundSize: 'cover',
               backgroundPosition: 'center',

@@ -6,7 +6,7 @@ export const Footer = () => {
   return (
     <>
       <div className='sticky bottom-2 mx-auto flex w-full max-w-90 justify-center gap-11 rounded-full bg-black/70 p-3'>
-        <Link to='/' className='flex flex-col items-center'>
+        <Link to='/timeline' className='flex flex-col items-center'>
           <img src='/icons/home.svg' alt='' />
           Home
         </Link>

@@ -1,4 +1,4 @@
-import { GetService, PostService } from '@/services/service';
+import { DelService, GetService, PostService } from '@/services/service';
 import type { Comment } from '@/types/comment';
 import type { FeedItem } from '@/types/feed';
 import { ArrowLeft, Bookmark, Heart, MessageSquareText } from 'lucide-react';
@@ -25,7 +25,6 @@ export const PostDetail = () => {
   const getComment = async () => {
     try {
       const r = await GetService(urlComment);
-      // console.log(r.data.comments);
       let fetchedComments: Comment[] = r.data.comments || [];
       const sortedComments = fetchedComments.sort((a, b) => {
         // Mengubah string tanggal menjadi objek Date untuk perbandingan yang akurat
@@ -37,8 +36,6 @@ export const PostDetail = () => {
         return dateA - dateB;
       });
       setComments(sortedComments);
-      // setComments(r.data.comments);
-      // console.log(comments);
     } catch (err) {}
   };
 
@@ -47,7 +44,7 @@ export const PostDetail = () => {
       try {
         const r = await GetService(url);
         // const Data: FeedItem = r.data;
-        // console.log(r.data);
+        console.log(r.data);
         setDetails(r.data);
       } catch (err) {}
     };
@@ -57,10 +54,6 @@ export const PostDetail = () => {
   useEffect(() => {
     getComment();
   }, [urlComment]);
-
-  // useEffect(() => {
-  //   console.log(comments);
-  // }, [comments]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,7 +74,6 @@ export const PostDetail = () => {
       toast.success(r.data.message);
       const newComment = r.data.data as Comment;
       if (newComment) {
-        // setComments((prevComments) => [newComment, ...prevComments]);
         setComments((prevComments) => [...prevComments, newComment]);
         setDetails((prevDetails) =>
           prevDetails
@@ -99,6 +91,15 @@ export const PostDetail = () => {
       console.error('Gagal submit komentar:', e);
       const msg = e?.response?.data?.message || 'post comment failed';
       toast.error(msg);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      const r = await DelService(`posts/${id}`, user?.token);
+      console.log('delete :', r);
+    } catch (e: any) {
+      console.error(e);
     }
   };
 
@@ -123,7 +124,14 @@ export const PostDetail = () => {
             />
             <div className='flex-1 p-5'>
               <div>
-                <UserAvatar a={details.author} c={details.createdAt} />
+                <div className='flex items-center justify-between'>
+                  <UserAvatar a={details.author} c={details.createdAt} />
+                  {details.author.id == user?.user.id && (
+                    <Button onClick={() => handleDelete(details.id)}>
+                      Delete
+                    </Button>
+                  )}
+                </div>
                 <div className='border-b border-neutral-800 pb-4'>
                   {details.caption}
                 </div>
