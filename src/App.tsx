@@ -8,6 +8,7 @@ import Register from './components/pages/register';
 import { UserSearch } from './components/pages/user-search';
 import { Toaster } from './components/ui/sonner';
 import { Timeline } from './components/pages/timeline3';
+import EditProfile from './components/pages/edit-profile';
 // import { Timeline } from './components/pages/timeline2';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <Route path='/timeline' element={<Timeline />} />
           <Route path='/posts/:id' element={<PostDetail />} />
           <Route path='/profile' element={<UserProfile />} />
+          <Route path='/edit' element={<EditProfile />} />
         </Routes>
       </div>
       <Toaster position='top-center' richColors />

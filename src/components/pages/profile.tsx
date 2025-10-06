@@ -56,7 +56,9 @@ export const UserProfile = () => {
               <div className='font-normal'>{user?.username}</div>
             </div>
           </div>
-          <Button className='cursor-pointer'>Edit Profile</Button>
+          <Button className='cursor-pointer' variant={'secondary'}>
+            <Link to='/edit'>Edit Profile</Link>
+          </Button>
         </div>
         <div className='py-4'>{user?.bio}</div>
         <div className='flex justify-between pb-4'>
