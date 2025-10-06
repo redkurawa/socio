@@ -13,7 +13,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Footer } from '../layouts/footer';
 import { Header } from '../layouts/header';
-import { UserLike } from '../layouts/like-dialog';
+import UserLike from '../layouts/like-dialog';
 import { StatPage } from '../layouts/pagination';
 import { UserAvatar } from '../layouts/user-avatar';
 
@@ -248,6 +248,7 @@ export const Timeline = () => {
                       <UserLike
                         id={feed.id}
                         onClose={() => setActiveLikeDialogId(null)}
+                        type='like'
                       />
                     )}
                   </div>

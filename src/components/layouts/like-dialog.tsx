@@ -1,4 +1,10 @@
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { DelService, GetService, PostService } from '@/services/service';
 import { authStore } from '@/store/user';
 import type { userLike } from '@/types/user-like';
@@ -6,31 +12,86 @@ import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import { Link } from 'react-router';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 interface UserLikeProps {
   id: number;
   onClose: () => void;
   type: 'like' | 'following' | 'follower';
+  username?: string;
 }
 
-// const PostServiceAlias = PostService || GetService;
-// const DeleteServiceAlias = DeleteService || GetService;
-
-export const UserLike = ({ id, onClose }: UserLikeProps) => {
+const UserLike = ({ id, onClose, type, username }: UserLikeProps) => {
   const [userLikes, setUserLikes] = useState<userLike[]>([]);
   const [open, setOpen] = useState(true);
+
   const user = authStore((s) => s.authData);
+  console.log('id :', id);
+  console.log('onClose :', onClose);
+  console.log('tipe :', type);
+  console.log('username :', username);
+  // const getUserLike = useCallback(async () => {
+  //   try {
+
+  //     switch (type) {
+  //       case 'like':
+  //         console.log('like');
+  //         const r = await GetService(`posts/${id}/likes`, user?.token);
+  //         break;
+  //       case 'following':
+  //         console.log('following');
+  //         const r = await GetService(
+  //           `users/${username}/following`,
+  //           user?.token
+  //         );
+  //         break;
+  //       case 'follower':
+  //         console.log('follower');
+  //         const r = await GetService(
+  //           `users/${username}/followers`,
+  //           user?.token
+  //         );
+  //     }
+  //     console.log(r.data.users);
+  //     setUserLikes(r.data.users || []);
+  //   } catch (e: any) {
+  //     console.error('Failed to fetch user likes:', e);
+  //     toast.error(e);
+  //   }
+  // }, [id, user?.token, toast]);
 
   const getUserLike = useCallback(async () => {
     try {
-      const r = await GetService(`posts/${id}/likes`, user?.token);
-      // console.log(r.data.users);
+      let r; // deklarasi di luar switch
+
+      switch (type) {
+        case 'like':
+          console.log('like');
+          r = await GetService(`posts/${id}/likes`, user?.token);
+          break;
+
+        case 'following':
+          console.log('following');
+          r = await GetService(`users/${username}/following`, user?.token);
+          break;
+
+        case 'follower':
+          console.log('follower');
+          r = await GetService(`users/${username}/followers`, user?.token);
+          break;
+
+        default:
+          console.warn('Unknown type:', type);
+          return;
+      }
+
+      // akses r di luar switch
       setUserLikes(r.data.users || []);
     } catch (e: any) {
       console.error('Failed to fetch user likes:', e);
       toast.error(e);
     }
-  }, [id, user?.token, toast]);
+  }, [id, user?.token, type, toast]);
 
   useEffect(() => {
     getUserLike();
@@ -90,6 +151,12 @@ export const UserLike = ({ id, onClose }: UserLikeProps) => {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className='max-h-[80vh] w-full max-w-xs overflow-y-auto border-neutral-500 bg-black p-0 sm:max-w-sm'>
+        <VisuallyHidden asChild>
+          <DialogHeader>
+            <DialogTitle></DialogTitle>
+            <DialogDescription></DialogDescription>
+          </DialogHeader>
+        </VisuallyHidden>
         <div className='space-y-3 px-4 pt-10 pb-4'>
           {userLikes.length === 0 ? (
             <p className='py-4 text-center text-gray-500'>
@@ -138,3 +205,5 @@ export const UserLike = ({ id, onClose }: UserLikeProps) => {
     </Dialog>
   );
 };
+
+export default UserLike;
