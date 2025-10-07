@@ -2,7 +2,7 @@ import { RegisSchema } from '@/schema/register-schema';
 import { PostService } from '@/services/service';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import { FormField } from '../layouts/form-register-field';
 import { Button } from '../ui/button';
@@ -196,7 +196,12 @@ export const Register = () => {
               >
                 Submit
               </Button>
-              <div>Already have an account? Log in</div>
+              <div>
+                Already have an account?{' '}
+                <Link to='/login'>
+                  <span className='text-primary-300'>Log in</span>
+                </Link>
+              </div>
             </form>
           </div>
         </div>

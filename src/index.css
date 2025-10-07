@@ -151,7 +151,16 @@
   }
 }
 
+/* @layer components {
+  
+} */
+
 @layer components {
+  .custom-input {
+    @apply my-1 border bg-neutral-900 text-neutral-400 placeholder-neutral-500 focus-visible:ring-1 focus-visible:ring-neutral-700;
+    /* Paksa warna border gelap mengalahkan 'border-input' bawaan shadcn */
+    border-color: rgb(38 38 38) !important; /* ~ neutral-800 */
+  }
   .sm-container {
     margin: 0 auto;
     @apply max-w-300;
@@ -159,6 +168,35 @@
 }
 
 @layer utilities {
+  input.custom-input:-webkit-autofill,
+  input.custom-input:-webkit-autofill:hover,
+  input.custom-input:-webkit-autofill:focus,
+  input.custom-input:autofill,
+  input.custom-input:autofill:hover,
+  input.custom-input:autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px rgb(23 23 23) inset !important; /* neutral-900 */
+    box-shadow: 0 0 0 1000px rgb(23 23 23) inset !important;
+    -webkit-text-fill-color: rgb(163 163 163) !important; /* neutral-400 */
+    caret-color: rgb(163 163 163);
+
+    /* tambahkan ini untuk border gelap */
+    border: 1px solid rgb(38 38 38) !important; /* neutral-800 */
+    outline: none !important;
+
+    transition:
+      background-color 9999s ease-out 0s,
+      color 9999s ease-out 0s;
+  }
+
+  input.custom-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px rgb(23 23 23) inset !important;
+    border: 1px solid rgb(38 38 38) !important;
+  }
+
+  /* (Opsional) Saat Chrome menyorot field kredensial */
+  input.custom-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px rgb(23 23 23) inset !important;
+  }
   /* flex utilities */
   .flex-center {
     @apply flex items-center justify-center;
@@ -176,7 +214,7 @@
     @apply flex items-center justify-center rounded-full;
   }
 
-  .custom-input {
-    @apply my-1 border-neutral-800 text-neutral-400;
-  }
+  /* .custom-input {
+    @apply my-1 border-neutral-800 bg-neutral-900 text-neutral-400;
+  } */
 }
