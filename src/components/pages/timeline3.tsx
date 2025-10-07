@@ -12,7 +12,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Footer } from '../layouts/footer';
-import { Header } from '../layouts/header';
+// import { Header } from '../layouts/header-lama';
 import UserLike from '../layouts/like-dialog';
 import { UserAvatar } from '../layouts/user-avatar';
 
@@ -22,6 +22,7 @@ import {
   useQueryClient,
   type InfiniteData,
 } from '@tanstack/react-query';
+import { Header } from '../layouts/header';
 
 type FeedResponse = { items: FeedItem[]; pagination: Pagination };
 type SavedResponse = { posts: FeedItem[] };

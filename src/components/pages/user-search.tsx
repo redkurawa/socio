@@ -27,21 +27,6 @@ export const UserSearch = () => {
     console.log('data :', users);
   }, [users]);
 
-  // const handleFollow = async (username: string) => {
-  //   try {
-  //     const r = await PostService(`follow/${username}`, user?.token);
-  //     console.log(r);
-  //     if (r.data?.success === false) {
-  //       toast.error(r.data.message || 'Following fail');
-  //     } else {
-  //       toast.success('Review saved');
-  //     }
-  //   } catch (e: any) {
-  //     const msg = e?.response?.data?.message || 'post review failed';
-  //     toast.error(msg);
-  //   }
-  // };
-
   const handleFollow = async (username: string) => {
     console.log(user?.token);
     try {
@@ -52,7 +37,7 @@ export const UserSearch = () => {
         toast.error(r.data.message || 'Following fail');
       } else {
         const msg = r.data?.message || 'Follow success';
-        toast.success(msg); // ⬅️ muncul toast dari message backend
+        toast.success(msg); //
       }
     } catch (e: any) {
       const msg = e?.response?.data?.message || 'Follow failed';
