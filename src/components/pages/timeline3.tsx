@@ -67,7 +67,7 @@ export const Timeline = () => {
     }
   }, [savedQuery.data, addbookmark]);
 
-  const limit = 10;
+  const limit = 20;
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const feedQuery = useInfiniteQuery<
@@ -82,16 +82,17 @@ export const Timeline = () => {
     initialPageParam: 1,
     queryFn: async ({ pageParam }) => {
       const r = await GetService(
-        `feed?page=${pageParam}&limit=${limit}`,
+        `posts?page=${pageParam}&limit=${limit}`,
         token!
       );
-      return r.data as FeedResponse;
+      const payload = r.data as { posts: FeedItem[]; pagination: Pagination };
+      return { items: payload.posts, pagination: payload.pagination };
     },
     getNextPageParam: (lastPage, allPages) => {
       const p: any = lastPage?.pagination;
       if (p?.nextPage) return p.nextPage as number;
-      if (p?.currentPage && p?.totalPages) {
-        return p.currentPage < p.totalPages ? p.currentPage + 1 : undefined;
+      if (p?.page && p?.totalPages) {
+        return p.page < p.totalPages ? p.page + 1 : undefined;
       }
       const lastItems = lastPage?.items ?? [];
       return lastItems.length === limit ? allPages.length + 1 : undefined;
